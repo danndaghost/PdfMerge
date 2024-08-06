@@ -1,0 +1,10 @@
+ruta_lectura: 'path_completo'
+
+carpeta_lectura: []
+carpeta_no_lectura: []
+carpeta_escritura: 'nombre_de_carpeta'
+
+archivo_dotacion: 'nombre_de_archivo.xlsx'
+
+columna_rut: 1
+columna_ignorar: 2
