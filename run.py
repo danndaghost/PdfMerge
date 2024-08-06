@@ -3,11 +3,12 @@ from openpyxl import load_workbook
 from fnmatch import fnmatch
 from PyPDF2 import PdfReader, PdfWriter
 
-rootpath = './'
+#rootpath = './'
 pattern = "*.pdf"
-#rootpath = r'\\192.168.0.11\cormup\Dir_Personas\Contratos-General'
+rootpath = '\\\\192.168.0.11\\cormup\\Dir_Personas\\Contratos-General'
 writepath = "Contratos SLEP"
 readpath = ['PC Bastian', 'Publicacion']
+excludepath = ['NO VIGENTE']
 pdffiles = []
 dotacion = []
 
@@ -26,7 +27,7 @@ def merge_pdfs(paths, output):
 
 def leerExcel():
     filepath        = rootpath
-    archivo         = filepath + 'dotacion'    
+    archivo         = filepath + '\\' + writepath + '\\' + 'dotacion'    
     archivo_excel   = archivo + '.xlsx'
     workbook = load_workbook(archivo_excel)
     hoja = workbook.worksheets[0]
@@ -35,17 +36,22 @@ def leerExcel():
     return dotacion
 
 def crearPdf(readpath, dotacion):
+    contador = 0
+    cantidadtotal = len(dotacion)
     for rut in dotacion:
+        contador = contador+1
+        print(":::::::::::::::  LEYENDO  :::  " + str(contador) + "  de  " + str(cantidadtotal) +  "  ::::  RUT  " + rut + "    :::::::::::::::::::")
         for rootfolder in readpath:
-            for path, subdirs, files in os.walk(rootpath + '/' + rootfolder):
+            for path, dirs, files in os.walk(rootpath + '\\' + rootfolder):
+                dirs[:] = [d for d in dirs if d not in excludepath]
                 for name in files:
                     if fnmatch(name, pattern) and (rut in name):
+                        print(os.path.join(path, name))
                         pdffiles.append(os.path.join(path, name))
         
         if len(pdffiles) > 0:
-            merge_pdfs(pdffiles, output=rootpath + '/' + writepath + '/' + rut + '.penalolen.pdf')    
+            merge_pdfs(pdffiles, output=rootpath + '\\' + writepath + '\\' + rut + '.penalolen.pdf')    
         pdffiles.clear()
-
         
 if __name__ == "__main__":
     dotacion = leerExcel() #obtener los rut a buscar en las carpetas
